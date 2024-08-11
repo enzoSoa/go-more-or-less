@@ -9,11 +9,11 @@ func getUserGuess() int {
   return guess
 }
 
-func compareGuess(number, guess int) bool {
+func compareGuess(numberToGuess, guess int) bool {
   switch {
-    case guess < number:
+    case guess < numberToGuess:
       fmt.Println("More")
-    case guess > number:
+    case guess > numberToGuess:
       fmt.Println("Less")
     default:
       return true
@@ -21,18 +21,34 @@ func compareGuess(number, guess int) bool {
   return false
 } 
 
-func main() {
-  const NUMBER_TO_GUESS int = 23
-  fmt.Println("Enter a number between 0 and 100:")
+func playNumbersSequence(numbersToGuess ...int) {
+  fmt.Println("This sequence is", len(numbersToGuess), "numbers long")
 
-  gameOver := false
-  var guesses []int
+  var guessesByNumber = make(map[int][]int)
+  for numberIndex, numberToGuess := range numbersToGuess {
+    fmt.Println("Enter a guess for the number", numberIndex + 1, ":")
 
-  for !gameOver {
-    guess := getUserGuess()
-    gameOver = compareGuess(NUMBER_TO_GUESS, guess)
-    guesses = append(guesses, guess)
+    guessesByNumber[numberIndex] = []int{}
+    numberGuessed := false
+    for !numberGuessed  {
+      guess := getUserGuess()
+      guessesByNumber[numberIndex] = append(guessesByNumber[numberIndex], guess)
+      numberGuessed = compareGuess(numberToGuess, guess)
+    }
   }
 
-  fmt.Println("GG!!", "You won in", len(guesses), "guesses")
+  fmt.Println("GG!! Score :")
+
+  totalGuessesCount := 0
+  for guessesIndex, guesses := range guessesByNumber {
+    guessesCount := len(guesses)
+    totalGuessesCount += guessesCount
+    fmt.Println("number", guessesIndex, "-", guessesCount, "guesses")
+  }
+  
+  fmt.Println("total guesses :", totalGuessesCount)
+}
+
+func main() {
+  playNumbersSequence(23, 32)
 }
